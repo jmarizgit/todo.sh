@@ -1,11 +1,11 @@
 #!/bin/bash
-#**** CONSTANTS ****#
+# CONSTANTS 
 PATH="./.todo_file"
-TEMP="./.todo_temp"
+TEMP="./.todo_tmp"
 
-#**** FUNCTIONS ****#
+# FUNCTIONS 
 
-#**** CHECK IF FILE EXISTS ****#
+# CHECK IF FILE EXISTS 
 function fileExists[] {
 	if [ -f $PATH ];then
 		return 1 #exist
@@ -14,7 +14,7 @@ function fileExists[] {
 	fi
 } #fileExists[]
 
-#**** CHECK IF FILE IS EMPTY ****#
+# CHECK IF FILE IS EMPTY 
 function emptyFile[] {
 	if [[ -s $FILE ]] ; then
 		return 1 #file NOT empty
@@ -23,31 +23,105 @@ function emptyFile[] {
 	fi ;
 } #emptyFile[]
 
-#**** MAIN PROGRAM ****#
+# CREATE REPOSITORY
+function init[] {
+	/usr/bin/touch $PATH
+	echo ""
+	echo "TODO repository created!"
+	echo ""
+} #init[]
+
+# SHOW ALL TODOS 
+function showAll[] {
+	/bin/cat -n $PATH
+} #showAll[]
+
+# DISPLAY ONLY COMPLETED TODOS 
+function showCompleted[] {
+	/bin/cat -n $PATH | /usr/bin/awk '/[0-9]\\t\\-/'
+} #showCompleted[]
+
+# DISPLAY ONLY PENDING TODOS 
+function showTodos[] {
+	/bin/cat -n $PATH | /usr/bin/awk '/[0-9]\\t\\+/'
+} #showTodo[]
+
+# ADD NEW TODO
+function addTodo[] {
+	echo "+ $1" > $TEMP 
+	/bin/cat $PATH >> $TEMP
+	/bin/cat $TEMP > $PATH
+} #addTodo[]
+
+# MARK TODO AS COMPLETED
+function completeTodo[] {
+	/usr/bin/sed -n $1p $PATH | sed 's/^\\+/\\-/' >> $PATH
+	/usr/bin/sed $1d $PATH > $TEMP
+	/bin/cat $TEMP > $PATH
+} #completeTodo[]
+
+# REMOVE SPECIFIC TODO
+function deleteTodo[] {
+	/usr/bin/sed -e $1d $PATH > $TEMP 
+	/bin/cat $TEMP > $PATH
+} #deleteTodo[]
+
+function deleteTodos[] {
+	> $PATH
+} #deleteTodos[]
+
+function showHelp[] {
+	echo ""
+	echo " TODO - command line todo list MM (c) 2012"
+	echo " --------------------------------------------"
+	echo " Usage:     todo [option] <string>"
+	echo ""
+	echo " List of options"
+	echo " init       starts todo list on current folder"
+	echo " +          displays only active todos"
+	echo " -          display only completed todos"
+	echo " add        followed by QUOTED string (ex.:\"my new todo\") includes a new todo"
+	echo " done       followed by todo's ID number, marks todo as completed"
+	echo " del        followed by todo's ID number, remove todo from current list"
+	echo " clean      deletes all list of todos ***USE WITH MODERATION***"
+	echo " uninstall  remove TODO application"
+	echo " help       display a quick command reference for the system"
+	echo ""
+} #showHelp[]
+
+
+# MAIN PROGRAM 
 function main[] {
 	fileExists[]
 	EXIST=$?
-	if [ $1 ] && [ $EXIST == 0 ];then
-
+	if [ $1 ] && [ $EXIST == 1 ];then
 		if [ $1 == "-" ];then
-		   echo "(-) show only completed"
+		   showCompleted[]
 		elif [ $1 == "+" ];then
-			echo "(+) show only todo list"
+			showTodos[]
 		elif [ $1 == "add" ] && [ $2 ];then
-			echo "(add) include new todo"
+			addTodo[] $2
 		elif [ $1 == "done" ] && [ $2 ];then
-			echo "(done) put item on complete list"
+			completeTodo[] $2
 		elif [ $1 == "del" ] && [ $2 ];then
-			echo "(del) delete item from list"
+			deleteTodo[] $2
 		elif [ $1 == "clean" ];then
-			echo "(clean) clear todo list"
+			deleteTodos[]
 		elif [ $1 == "help" ];then
-			echo "(help) system help"
-		elif [ $1 == "uninstall" ];then
-			echo "(uninstall) uninstall todo system"
+			showHelp[]
+		else
+			showAll[]
 		fi
-
+	elif [ $EXIST == 1 ];then
+		showAll[]
+	elif [ $1 ] && [ $1 == "init" ];then
+		echo "create todo repository"
+	else
+		echo ""
+		echo "TODO repository do not exist. Try use - todo init"
+		echo ""
 	fi
+
 } #main[]
 
 main[] $1 $2 #passing commandline parameter and calling main program
