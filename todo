@@ -1,0 +1,53 @@
+#!/bin/bash
+#**** CONSTANTS ****#
+PATH="./.todo_file"
+TEMP="./.todo_temp"
+
+#**** FUNCTIONS ****#
+
+#**** CHECK IF FILE EXISTS ****#
+function fileExists[] {
+	if [ -f $PATH ];then
+		return 1 #exist
+	else
+		return 0
+	fi
+} #fileExists[]
+
+#**** CHECK IF FILE IS EMPTY ****#
+function emptyFile[] {
+	if [[ -s $FILE ]] ; then
+		return 1 #file NOT empty
+	else
+		return 0
+	fi ;
+} #emptyFile[]
+
+#**** MAIN PROGRAM ****#
+function main[] {
+	fileExists[]
+	EXIST=$?
+	if [ $1 ] && [ $EXIST == 0 ];then
+
+		if [ $1 == "-" ];then
+		   echo "(-) show only completed"
+		elif [ $1 == "+" ];then
+			echo "(+) show only todo list"
+		elif [ $1 == "add" ] && [ $2 ];then
+			echo "(add) include new todo"
+		elif [ $1 == "done" ] && [ $2 ];then
+			echo "(done) put item on complete list"
+		elif [ $1 == "del" ] && [ $2 ];then
+			echo "(del) delete item from list"
+		elif [ $1 == "clean" ];then
+			echo "(clean) clear todo list"
+		elif [ $1 == "help" ];then
+			echo "(help) system help"
+		elif [ $1 == "uninstall" ];then
+			echo "(uninstall) uninstall todo system"
+		fi
+
+	fi
+} #main[]
+
+main[] $1 $2 #passing commandline parameter and calling main program
