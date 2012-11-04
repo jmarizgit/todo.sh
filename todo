@@ -22,7 +22,7 @@ function emptyFile[] {
 		return 1 #file NOT empty
 	else
 		return 0
-	fi ;
+	fi
 } #emptyFile[]
 
 # CREATE REPOSITORY
@@ -37,7 +37,7 @@ function init[] {
 function showAll[] {
 	emptyFile[]
 	EMPTY=$?
-	if [ $EMPTY == 1 ];then
+	if [ $EMPTY == 0 ];then
 		/bin/cat -n $PATH
 	else
 		echo ""
