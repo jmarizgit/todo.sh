@@ -2,6 +2,8 @@
 # CONSTANTS 
 PATH="./.todo_file"
 TEMP="./.todo_tmp"
+CMD=$1
+OPT=$2
 
 # FUNCTIONS 
 
@@ -33,7 +35,16 @@ function init[] {
 
 # SHOW ALL TODOS 
 function showAll[] {
-	/bin/cat -n $PATH
+	emptyFile[]
+	EMPTY=$?
+	if [ $EMPTY == 1 ];then
+		/bin/cat -n $PATH
+	else
+		echo ""
+		echo "No todos on the list"
+		echo "Try use - todo add \"todo name\""
+		echo ""
+	fi
 } #showAll[]
 
 # DISPLAY ONLY COMPLETED TODOS 
@@ -99,12 +110,12 @@ function main[] {
 		   showCompleted[]
 		elif [ $1 == "+" ];then
 			showTodos[]
-		elif [ $1 == "add" ] && [ $2 ];then
-			addTodo[] $2
-		elif [ $1 == "done" ] && [ $2 ];then
-			completeTodo[] $2
-		elif [ $1 == "del" ] && [ $2 ];then
-			deleteTodo[] $2
+		elif [ $1 == "add" ];then
+			addTodo[] "$2"
+		elif [ $1 == "done" ];then
+			completeTodo[] "$2"
+		elif [ $1 == "del" ];then
+			deleteTodo[] "$2"
 		elif [ $1 == "clean" ];then
 			deleteTodos[]
 		elif [ $1 == "help" ];then
@@ -115,7 +126,7 @@ function main[] {
 	elif [ $EXIST == 1 ];then
 		showAll[]
 	elif [ $1 ] && [ $1 == "init" ];then
-		echo "create todo repository"
+		init[]
 	else
 		echo ""
 		echo "TODO repository do not exist. Try use - todo init"
@@ -124,4 +135,4 @@ function main[] {
 
 } #main[]
 
-main[] $1 $2 #passing commandline parameter and calling main program
+main[] "$1" "$2" #passing commandline parameter and calling main program
