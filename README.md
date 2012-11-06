@@ -1,4 +1,4 @@
-#todo2
+#todo.sh
 New version for todo.c. Now completly as a shell script.
 
 ##Installation
