@@ -49,12 +49,12 @@ function showAll[] {
 
 # DISPLAY ONLY COMPLETED TODOS 
 function showCompleted[] {
-	/bin/cat -n $PATH | /usr/bin/awk '/[0-9]\\t\\-/'
+	/bin/cat -n $PATH | /usr/bin/awk '/[0-9]\t\-/'
 } #showCompleted[]
 
 # DISPLAY ONLY PENDING TODOS 
 function showTodos[] {
-	/bin/cat -n $PATH | /usr/bin/awk '/[0-9]\\t\\+/'
+	/bin/cat -n $PATH | /usr/bin/awk '/[0-9]\t\+/'
 } #showTodo[]
 
 # ADD NEW TODO
